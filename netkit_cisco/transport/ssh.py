@@ -29,6 +29,7 @@ class _SSHTransport:
             "host": device.ip,
             "username": device.username,
             "password": device.password,
+            "port": device.ssh_port,
             "device_type": device.device_type
         }
 

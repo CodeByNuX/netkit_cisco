@@ -19,12 +19,14 @@ class CiscoDevice:
 
     This class models the device as an object with properties such as:
     - IP address, hostname, platform type
+    - SSH credentials and port
     - Interfaces, OS version, storage, uptime
+    - State tracking: last connection, exception and number of attempts
     - methods for interaction
 
-    A devices can be connected via SSH, and its attributes queried after connection.
+    A device can be connected via SSH, and its attributes queried after connection.
     """
-    def __init__(self,hostname:str=None,ip:str=None,username:str=None,password:str=None,device_type:DeviceType=DeviceType.AUTO_DETECT.value):
+    def __init__(self, hostname:str=None, ip:str=None, username:str=None, password:str=None, ssh_port:int=22, device_type:DeviceType=DeviceType.AUTO_DETECT.value):
         """
         Initialize a CiscoDevice object.
 
@@ -33,20 +35,26 @@ class CiscoDevice:
             ip (str): IP address used for SSH access
             username (str): SSH login username.
             password (str): SSH login password.
-            is_connected (bool): Track SSH connection.
+            ssh_port (int): SSH port number (default is 22)
             device_type (DeviceType): Platform type (IOS,NX-OS, etc)
+        
+        Attributes:
+            connection_attempts (int): counts the number of SSH connection attempts
+            last_connected_at (datetime): Timestamp of the most recent successful connection
+            last_exception (str): Stores the last connetion error, if any.
         """
         self.hostname = hostname
         self.ip = ip
         self.username = username
         self.password = password
+        self.ssh_port = ssh_port
         self.device_type = device_type
         self.last_connected_at:datetime = None
         self.connection_attempts:int = 0
         self.last_exception:str = None
         self._connection = _SSHTransport(self)
     
-    def ssh_connect(self)-> bool:
+    def ssh_connect(self):
         """
         Try to establish an SSH connection to the device.
 
@@ -63,7 +71,6 @@ class CiscoDevice:
             self._connection.connect()
             self.last_connected_at = datetime.now()
             self.last_exception = None
-            return True
         
         except NetmikoAuthenticationException as e:
 
@@ -77,11 +84,20 @@ class CiscoDevice:
             raise
     
     def ssh_disconnect():
+        """
+        Close the SSH session to the device
+
+        (Not yet implemented)
+        """
         pass
 
     @property
     def is_connected(self) -> bool:
         """
+        Check if the device has an active SSH connection.
+
+        Returns:
+            bool: True if the SSH session is live and responsive
 
         """
         try:
