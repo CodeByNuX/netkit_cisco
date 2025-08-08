@@ -41,7 +41,9 @@ class CiscoDevice:
         self.username = username
         self.password = password
         self.device_type = device_type
-        self.is_connected = False
+        self.last_connected_at:datetime = None
+        self.connection_attempts:int = 0
+        self.last_exception:str = None
         self._connection = _SSHTransport(self)
     
     def ssh_connect(self)-> bool:
@@ -55,13 +57,16 @@ class CiscoDevice:
             NetmikoAuthenticationException: Login failed.
             NetmikoTimeoutException: host not reachable.
             Exception: any other error during connection.
-        """        
-        try:
-            #self._connection = _SSHTransport.connect(self)
+        """ 
+        self.connection_attempts += 1       
+        try:            
             self._connection.connect()
+            self.last_connected_at = datetime.now()
+            self.last_exception = None
             return True
         
         except NetmikoAuthenticationException as e:
+
             _error_handler.log_error(f"Authentication failed for {self.ip}: {e}")
             raise 
         except NetmikoTimeoutException as e:
@@ -70,3 +75,20 @@ class CiscoDevice:
         except Exception as e:
             _error_handler.log_error(f"Unexpected error connecting to {self.ip}: {e}")
             raise
+    
+    def ssh_disconnect():
+        pass
+
+    @property
+    def is_connected(self) -> bool:
+        """
+
+        """
+        try:
+            if not self._connection or not self._connection.connection:
+                return False
+            self._connection.connection.find_prompt() #
+            return True
+        except Exception:
+            return False
+
