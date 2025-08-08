@@ -10,7 +10,6 @@ Autodetection of platform type is supported when DeviceType.AUTO_DETECT is used.
 from __future__ import annotations
 from netmiko import ConnectHandler, ConnectHandler, NetmikoTimeoutException, NetmikoAuthenticationException
 from netmiko.ssh_autodetect import SSHDetect
-#from netkit_cisco.device import CiscoDevice
 from netkit_cisco.platforms import DeviceType
 
 class _SSHTransport:
@@ -60,3 +59,15 @@ class _SSHTransport:
             raise
         except Exception:
             raise
+    
+    def disconnect(self):
+        """
+        Disconnect the current SSH connection if it's active
+        
+        """
+        if self.connection:
+            try:
+                self.connection.disconnect()
+                self.connection = None
+            except Exception:
+                pass

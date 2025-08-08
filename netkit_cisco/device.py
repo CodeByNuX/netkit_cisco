@@ -83,13 +83,16 @@ class CiscoDevice:
             _error_handler.log_error(f"Unexpected error connecting to {self.ip}: {e}")
             raise
     
-    def ssh_disconnect():
+    def ssh_disconnect(self):
         """
         Close the SSH session to the device
 
         (Not yet implemented)
         """
-        pass
+        try:
+            self._connection.disconnect()
+        finally:
+            self.last_connected_at = None
 
     @property
     def is_connected(self) -> bool:
