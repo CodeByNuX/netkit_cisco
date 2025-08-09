@@ -24,6 +24,7 @@ class _SSHTransport:
         Initialize netmiko connection parameters
 
         """
+        # Netmiko connection parameters
         self.connect_params = {
             "host": device.ip,
             "username": device.username,
@@ -32,6 +33,7 @@ class _SSHTransport:
             "device_type": device.device_type
         }
 
+        # hold the live Netmiko SSH session once connected.
         self.connection:ConnectHandler = None
         
     def connect(self):
@@ -45,29 +47,35 @@ class _SSHTransport:
         """
         try:
             
+            # use Netmiko autodetect if requested
             if self.connect_params["device_type"] == DeviceType.AUTO_DETECT.value:
                 guesser = SSHDetect(**self.connect_params)
                 best_match = guesser.autodetect()
                 self.connect_params["device_type"] = best_match
 
+            # Establish Netmiko SSH connection and return object
             self.connection = ConnectHandler(**self.connect_params)
             return self.connection
         
         except NetmikoAuthenticationException:
+            # Re-raise, let the calling code handle
             raise
         except NetmikoTimeoutException:
+            # Re-raise, let the calling code handle
             raise
         except Exception:
+            # Re-raise, let the calling code handle
             raise
     
     def disconnect(self):
         """
         Disconnect the current SSH connection if it's active
-        
+
         """
         if self.connection:
             try:
                 self.connection.disconnect()
                 self.connection = None
             except Exception:
+                # ignore any netmiko disconnect errors
                 pass

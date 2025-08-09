@@ -22,7 +22,9 @@ class _error_handler:
         """
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         full_message = f"{timestamp} [ERROR] {message}"
+        # Log to file
         logging.error(message)
+        # print full message w/ timestamp for immediate feedback
         print(full_message)
     
     @staticmethod
@@ -35,5 +37,7 @@ class _error_handler:
         """
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         full_message = f"{timestamp} [INFO] {message}"
+        # Log to file
         logging.info(message)
+        # print full message w/ timestamp for immediate feedback
         print(full_message)

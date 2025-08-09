@@ -66,20 +66,31 @@ class CiscoDevice:
             NetmikoTimeoutException: host not reachable.
             Exception: any other error during connection.
         """ 
+
+        #track connection attempts
         self.connection_attempts += 1       
-        try:            
+        try:
+
+            #using _SSHTransport to open Netmiko SSH ssession            
             self._connection.connect()
             self.last_connected_at = datetime.now()
+            
+            # Clear any previous exception record
             self.last_exception = None
         
         except NetmikoAuthenticationException as e:
-
+            # Store the error for reference  and log it before re-raising
+            self.last_exception = str(e)
             _error_handler.log_error(f"Authentication failed for {self.ip}: {e}")
             raise 
         except NetmikoTimeoutException as e:
+            # Store the timeout error and log it before re-raising
+            self.last_exception = str(e)
             _error_handler.log_error(f"Timeout connecting to {self.ip}: {e}")
             raise
         except Exception as e:
+            # Catch and log any other unexpected erros and raise
+            self.last_exception = str(e)
             _error_handler.log_error(f"Unexpected error connecting to {self.ip}: {e}")
             raise
     
@@ -104,10 +115,50 @@ class CiscoDevice:
 
         """
         try:
+            # Ensure _connection exits and we have a Netmiko connection object
             if not self._connection or not self._connection.connection:
                 return False
+            
+            # using find_prompt to check for active session, raises exception if connection is broken
             self._connection.connection.find_prompt() #
             return True
         except Exception:
+            # connection no longer exists
             return False
+        
+    def _run_command(self,command:str,expect_string:str=None,read_timeout:int=30,use_textfsm:bool=False) ->str|None:
+        """
+        Run a single operational (show) command via Netmiko.
+
+        Args:
+            Commannd (str): The CLI command to run
+            expect_string (str): Optional regex to wait for before returning
+            read_timeout (int): Seconds to wait for output before timing out.
+            use_textfsm: If True and template exists, return parsed output.
+
+        """
+        try:
+            # Ensure we have a live SSH session before sending the command
+            if not self.is_connected:
+                return None
+            
+            # Get the active Netmiko connection object
+            conn = self._connection.connection
+            # Send the command and return the output
+            return conn.send_command(command,expect_string=expect_string, read_timeout=read_timeout,use_textfsm=use_textfsm)
+            
+        except NetmikoAuthenticationException as e:
+            self.last_exception = str(e)
+            _error_handler.log_error(f"Authentication error running '{command}' on {self.ip}: {e}")
+            return None
+        except NetmikoTimeoutException as e:
+            self.last_exception = str(e)
+            _error_handler.log_error(f"Authentication error running '{command}' on {self.ip}: {e}")
+            return None
+        except Exception as e:
+            self.last_exception = str(e)
+            _error_handler.log_error(f"Unexpected error running '{command}' on {self.ip}: {e}")
+            return None
+
+
 
