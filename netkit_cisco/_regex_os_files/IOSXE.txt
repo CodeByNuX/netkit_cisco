@@ -1,0 +1,33 @@
+﻿iosxe
+-----
+
+    ^(\d{1,2})\.(\d{1,2})\.(\d{1,2})([a-z])?$
+
+Options: Case sensitive; Exact spacing; Dot doesn’t match line breaks; ^$ don’t match at line breaks; Regex syntax only
+
+* [Assert position at the beginning of the string][1] `^`
+* [Match the regex below and capture its match into backreference number 1][2] `(\d{1,2})`
+    * [Match a single character that is a “digit” (any decimal number in any Unicode script)][3] `\d{1,2}`
+        * [Between one and 2 times, as many times as possible, giving back as needed (greedy)][4] `{1,2}`
+* [Match the character “.” literally][5] `\.`
+* [Match the regex below and capture its match into backreference number 2][2] `(\d{1,2})`
+    * [Match a single character that is a “digit” (any decimal number in any Unicode script)][3] `\d{1,2}`
+        * [Between one and 2 times, as many times as possible, giving back as needed (greedy)][4] `{1,2}`
+* [Match the character “.” literally][5] `\.`
+* [Match the regex below and capture its match into backreference number 3][2] `(\d{1,2})`
+    * [Match a single character that is a “digit” (any decimal number in any Unicode script)][3] `\d{1,2}`
+        * [Between one and 2 times, as many times as possible, giving back as needed (greedy)][4] `{1,2}`
+* [Match the regex below and capture its match into backreference number 4][2] `([a-z])?`
+    * [Between zero and one times, as many times as possible, giving back as needed (greedy)][6] `?`
+    * [Match a single character in the range between “a” and “z” (case sensitive)][7] `[a-z]`
+* [Assert position at the end of the string, or before the line break at the end of the string, if any (line feed)][1] `$`
+
+Created with [RegexBuddy](https://www.regexbuddy.com/)
+
+[1]: https://www.regular-expressions.info/anchors.html
+[2]: https://www.regular-expressions.info/brackets.html
+[3]: https://www.regular-expressions.info/shorthand.html
+[4]: https://www.regular-expressions.info/repeat.html#limit
+[5]: https://www.regular-expressions.info/characters.html#special
+[6]: https://www.regular-expressions.info/optional.html
+[7]: https://www.regular-expressions.info/charclass.html

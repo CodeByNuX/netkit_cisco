@@ -1,0 +1,75 @@
+﻿NXOS
+----
+
+    ^(\d+)\.(\d+)\((\d+)\)(I\d)(?:\((\d+)\))?$
+
+Options: Case sensitive; Exact spacing; Dot doesn’t match line breaks; ^$ don’t match at line breaks; Regex syntax only
+
+* [Assert position at the beginning of the string][1] `^`
+* [Match the regex below and capture its match into backreference number 1][2] `(\d+)`
+    * [Match a single character that is a “digit” (any decimal number in any Unicode script)][3] `\d+`
+        * [Between one and unlimited times, as many times as possible, giving back as needed (greedy)][4] `+`
+* [Match the character “.” literally][5] `\.`
+* [Match the regex below and capture its match into backreference number 2][2] `(\d+)`
+    * [Match a single character that is a “digit” (any decimal number in any Unicode script)][3] `\d+`
+        * [Between one and unlimited times, as many times as possible, giving back as needed (greedy)][4] `+`
+* [Match the opening parenthesis character][5] `\(`
+* [Match the regex below and capture its match into backreference number 3][2] `(\d+)`
+    * [Match a single character that is a “digit” (any decimal number in any Unicode script)][3] `\d+`
+        * [Between one and unlimited times, as many times as possible, giving back as needed (greedy)][4] `+`
+* [Match the closing parenthesis character][5] `\)`
+* [Match the regex below and capture its match into backreference number 4][2] `(I\d)`
+    * [Match the character “I” literally (case sensitive)][6] `I`
+    * [Match a single character that is a “digit” (any decimal number in any Unicode script)][3] `\d`
+* [Match the regular expression below][2] `(?:\((\d+)\))?`
+    * [Between zero and one times, as many times as possible, giving back as needed (greedy)][7] `?`
+    * [Match the opening parenthesis character][5] `\(`
+    * [Match the regex below and capture its match into backreference number 5][2] `(\d+)`
+        * [Match a single character that is a “digit” (any decimal number in any Unicode script)][3] `\d+`
+            * [Between one and unlimited times, as many times as possible, giving back as needed (greedy)][4] `+`
+    * [Match the closing parenthesis character][5] `\)`
+* [Assert position at the end of the string, or before the line break at the end of the string, if any (line feed)][1] `$`
+
+Created with [RegexBuddy](https://www.regexbuddy.com/)
+
+[1]: https://www.regular-expressions.info/anchors.html
+[2]: https://www.regular-expressions.info/brackets.html
+[3]: https://www.regular-expressions.info/shorthand.html
+[4]: https://www.regular-expressions.info/repeat.html
+[5]: https://www.regular-expressions.info/characters.html#special
+[6]: https://www.regular-expressions.info/characters.html
+[7]: https://www.regular-expressions.info/optional.html
+
+
+
+    ^(\d+)\.(\d+)\((\d+)\)([A-Z])?$
+
+Options: Case sensitive; Exact spacing; Dot doesn’t match line breaks; ^$ don’t match at line breaks; Regex syntax only
+
+* [Assert position at the beginning of the string][1] `^`
+* [Match the regex below and capture its match into backreference number 1][2] `(\d+)`
+    * [Match a single character that is a “digit” (any decimal number in any Unicode script)][3] `\d+`
+        * [Between one and unlimited times, as many times as possible, giving back as needed (greedy)][4] `+`
+* [Match the character “.” literally][5] `\.`
+* [Match the regex below and capture its match into backreference number 2][2] `(\d+)`
+    * [Match a single character that is a “digit” (any decimal number in any Unicode script)][3] `\d+`
+        * [Between one and unlimited times, as many times as possible, giving back as needed (greedy)][4] `+`
+* [Match the opening parenthesis character][5] `\(`
+* [Match the regex below and capture its match into backreference number 3][2] `(\d+)`
+    * [Match a single character that is a “digit” (any decimal number in any Unicode script)][3] `\d+`
+        * [Between one and unlimited times, as many times as possible, giving back as needed (greedy)][4] `+`
+* [Match the closing parenthesis character][5] `\)`
+* [Match the regex below and capture its match into backreference number 4][2] `([A-Z])?`
+    * [Between zero and one times, as many times as possible, giving back as needed (greedy)][6] `?`
+    * [Match a single character in the range between “A” and “Z” (case sensitive)][7] `[A-Z]`
+* [Assert position at the end of the string, or before the line break at the end of the string, if any (line feed)][1] `$`
+
+Created with [RegexBuddy](https://www.regexbuddy.com/)
+
+[1]: https://www.regular-expressions.info/anchors.html
+[2]: https://www.regular-expressions.info/brackets.html
+[3]: https://www.regular-expressions.info/shorthand.html
+[4]: https://www.regular-expressions.info/repeat.html
+[5]: https://www.regular-expressions.info/characters.html#special
+[6]: https://www.regular-expressions.info/optional.html
+[7]: https://www.regular-expressions.info/charclass.html

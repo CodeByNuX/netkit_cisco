@@ -52,6 +52,7 @@ class _SSHTransport:
                 guesser = SSHDetect(**self.connect_params)
                 best_match = guesser.autodetect()
                 self.connect_params["device_type"] = best_match
+                self.device_type = DeviceType(best_match)
 
             # Establish Netmiko SSH connection and return object
             self.connection = ConnectHandler(**self.connect_params)

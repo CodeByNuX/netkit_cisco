@@ -5,22 +5,7 @@ from netmiko import NetmikoAuthenticationException, NetmikoTimeoutException
 from netkit_cisco.platforms import DeviceType
 from netkit_cisco.transport.ssh import _SSHTransport
 from netkit_cisco._error_handler import _error_handler
-#from netkit_cisco._os_info import OSInfo
-
-
-'''class DeviceType(str,Enum):
-    """
-    Represents cisco platform types for indentification and connection logic.
-
-    These values map to what Netmiko expects for device_type.
-    """
-    CISCO_IOS = "cisco_ios"
-    CISCO_XE =  "cisco_xe"
-    CISCO_NXOS = "cisco_nxos"
-    AUTO_DETECT = "autodetect"'''
-
-
-
+from netkit_cisco.os import IOSXEVersion, NXOSVersion, parse_version
 
 class CiscoDevice:
     """
@@ -58,7 +43,6 @@ class CiscoDevice:
         self.password = password
         self.ssh_port = ssh_port
         self.device_type = device_type
-        #self.os = OSInfo()
         self.config_register = None
         self.serial = None
         self.model = None
@@ -214,6 +198,7 @@ class CiscoDevice:
         """
         try:
             raw = self._run_command("show version", use_textfsm=True)
+            
         except Exception as e:
             _error_handler.log_error(f"_auto_discovery: 'show version' failed: {e}")
             return
@@ -224,10 +209,14 @@ class CiscoDevice:
             return
 
         self.hostname = self._safe_get(record,"hostname",default=None, log_path="hostname")
-        self.config_register = self._safe_get(record,"config_register",default=None,log_path="config_register")
+        #self.config_register = self._safe_get(record,"config_register",default=None,log_path="config_register")
         self.model = (self._safe_get(record, "hardware",0,default=None) or # IOS-XE
                       self._safe_get(record,"platform",default=None)) # NX-OS
         self.serial = (self._safe_get(record, "serial", default=None) or 
                        self._safe_get(record,"serial_number", default=None))
+        
+        self.os = parse_version((self._safe_get(record,"os") or # NX-OS
+                                 self._safe_get(record,"version"))) #IOS-XE
+
         
         
