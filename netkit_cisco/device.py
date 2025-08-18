@@ -213,7 +213,7 @@ class CiscoDevice:
         self.config_register = self._safe_get(record,"config_register",default=None,log_path="config_register")
         self.model = (self._safe_get(record, "hardware",0,default=None) or # IOS-XE
                       self._safe_get(record,"platform",default=None)) # NX-OS
-        self.serial = (self._safe_get(record, "serial", default=None) or 
+        self.serial = (self._safe_get(record, "serial",0, default=None) or 
                        self._safe_get(record,"serial_number", default=None))
         
         self.os = parse_version((self._safe_get(record,"os") or # NX-OS

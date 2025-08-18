@@ -29,6 +29,8 @@ try:
     print(node.storage.total_free_B)
     print(node.storage.total_size_B) 
     print(f"has space: {node.storage.has_space(9999999999999)}")
+    node.ssh_disconnect()
+    print(f"is_connected: {node.is_connected}")
     print("****************")
 
 except Exception:
