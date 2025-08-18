@@ -27,7 +27,8 @@ try:
     print(node.model)
     print(node.storage.name)
     print(node.storage.total_free_B)
-    print(node.storage.total_size_B)
+    print(node.storage.total_size_B) 
+    print(f"has space: {node.storage.has_space(9999999999999)}")
     print("****************")
 
 except Exception:

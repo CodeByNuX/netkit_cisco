@@ -248,6 +248,6 @@ class CiscoDevice:
             return
         
         if self.os.family == "NX-OS":
-            self.storage = StorageInfo(self._safe_get(record,"usage").split(":",1)[0],self._safe_get(record,"bytesfree"),self._safe_get(record,"bytestotal"))
+            self.storage = StorageInfo(self._safe_get(record,"usage").split(":",1)[0],int(self._safe_get(record,"bytesfree")),int(self._safe_get(record,"bytestotal")))
         else:
-            self.storage = StorageInfo(self._safe_get(record,"file_system").split(":",1)[0],self._safe_get(record,"total_free"),self._safe_get(record,"total_size"))      
+            self.storage = StorageInfo(self._safe_get(record,"file_system").split(":",1)[0],int(self._safe_get(record,"total_free")),int(self._safe_get(record,"total_size")))  
