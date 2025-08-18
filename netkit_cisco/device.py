@@ -1,11 +1,12 @@
 
-from enum import Enum
 from datetime import datetime
+import json
 from netmiko import NetmikoAuthenticationException, NetmikoTimeoutException
 from netkit_cisco.platforms import DeviceType
 from netkit_cisco.transport.ssh import _SSHTransport
 from netkit_cisco._error_handler import _error_handler
-from netkit_cisco.os import IOSXEVersion, NXOSVersion, parse_version
+from netkit_cisco.os import parse_version
+from netkit_cisco.storage import StorageInfo
 
 class CiscoDevice:
     """
@@ -193,7 +194,7 @@ class CiscoDevice:
             
     def auto_discovery(self):
         """
-        Best effort population of basic properties from 'show version' (TextFSM)
+        Best effort population of basic properties from 'show version', bootflash (TextFSM)
         Logs errors instead of raising
         """
         try:
@@ -209,7 +210,7 @@ class CiscoDevice:
             return
 
         self.hostname = self._safe_get(record,"hostname",default=None, log_path="hostname")
-        #self.config_register = self._safe_get(record,"config_register",default=None,log_path="config_register")
+        self.config_register = self._safe_get(record,"config_register",default=None,log_path="config_register")
         self.model = (self._safe_get(record, "hardware",0,default=None) or # IOS-XE
                       self._safe_get(record,"platform",default=None)) # NX-OS
         self.serial = (self._safe_get(record, "serial", default=None) or 
@@ -217,6 +218,36 @@ class CiscoDevice:
         
         self.os = parse_version((self._safe_get(record,"os") or # NX-OS
                                  self._safe_get(record,"version"))) #IOS-XE
+        # ------- show bootflash:
+        
+        try:
+            if self.os.family == "NX-OS":
+                raw = self._run_command("dir bootflash: | json")
+            else:
+                raw = self._run_command("dir bootflash:",use_textfsm=True)
+        except Exception as e:
+            _error_handler.log_error(f"_auto_discovery: 'dir bootflash:' failed: {e}")
+            return
 
         
+        #
+        if self.os.family == "NX-OS":
+            try:
+                record = json.loads(raw.strip())
+            except json.JSONDecodeError as e:
+                _error_handler.log_error(f"_auto_discovery: failed to decode NX-OS JSON: {e}")
+                return
+            except Exception as e:
+                _error_handler.log_error(f"_auto_discovery: unexpected error parsing NX-OS JSON: {e}")
+                return
+        else:
+            record = self._safe_get(raw,0,default=None,log_path="raw[0]")
         
+        if not isinstance(record,dict):
+            _error_handler.log_info("_auto_discovery: first record is not a dict, skipping")
+            return
+        
+        if self.os.family == "NX-OS":
+            self.storage = StorageInfo(self._safe_get(record,"usage").split(":",1)[0],self._safe_get(record,"bytesfree"),self._safe_get(record,"bytestotal"))
+        else:
+            self.storage = StorageInfo(self._safe_get(record,"file_system").split(":",1)[0],self._safe_get(record,"total_free"),self._safe_get(record,"total_size"))      

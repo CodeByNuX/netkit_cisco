@@ -95,6 +95,7 @@ class NXOSVersion:
             self.minor = int(value.group(2))
             self.maintenance = int(value.group(3))
             self.suffix = value.group(4) or ""
+            return
 
     def is_newer_than(self, other) -> bool:
         """

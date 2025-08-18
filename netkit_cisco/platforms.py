@@ -15,3 +15,4 @@ class DeviceType(str,Enum):
     CISCO_NXOS = "cisco_nxos"
     CISCO_ASA = "cisco_asa"
     AUTO_DETECT = "autodetect"
+    UNKNOWN = "unknown"

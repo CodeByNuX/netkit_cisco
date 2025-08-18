@@ -11,6 +11,7 @@ from __future__ import annotations
 from netmiko import ConnectHandler, ConnectHandler, NetmikoTimeoutException, NetmikoAuthenticationException
 from netmiko.ssh_autodetect import SSHDetect
 from netkit_cisco.platforms import DeviceType
+from netkit_cisco._error_handler import _error_handler
 
 class _SSHTransport:
     """
@@ -36,7 +37,7 @@ class _SSHTransport:
         # hold the live Netmiko SSH session once connected.
         self.connection:ConnectHandler = None
         
-    def connect(self):
+    def connect(self) -> str | None:
         """
         Establish an SSH session with the device.
 
@@ -45,14 +46,15 @@ class _SSHTransport:
         Returns:
             ConnectHandler: The live Netmiko SSH session
         """
+        best_match = None
         try:
             
             # use Netmiko autodetect if requested
             if self.connect_params["device_type"] == DeviceType.AUTO_DETECT.value:
                 guesser = SSHDetect(**self.connect_params)
                 best_match = guesser.autodetect()
-                self.connect_params["device_type"] = best_match
-                self.device_type = DeviceType(best_match)
+                if best_match:
+                    self.connect_params["device_type"] = best_match
 
             # Establish Netmiko SSH connection and return object
             self.connection = ConnectHandler(**self.connect_params)

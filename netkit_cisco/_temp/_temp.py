@@ -25,6 +25,9 @@ try:
 
     print(node.serial)
     print(node.model)
+    print(node.storage.name)
+    print(node.storage.total_free_B)
+    print(node.storage.total_size_B)
     print("****************")
 
 except Exception:
