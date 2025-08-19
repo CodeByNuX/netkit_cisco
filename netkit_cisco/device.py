@@ -2,7 +2,8 @@
 from datetime import datetime
 import json
 from netmiko import NetmikoAuthenticationException, NetmikoTimeoutException
-from netkit_cisco.platforms import DeviceType
+#from netkit_cisco.platforms import DeviceType
+from netkit_cisco._enums import DeviceType
 from netkit_cisco.transport.ssh import _SSHTransport
 from netkit_cisco._error_handler import _error_handler
 from netkit_cisco.os import parse_version

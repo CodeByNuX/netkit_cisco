@@ -10,7 +10,8 @@ Autodetection of platform type is supported when DeviceType.AUTO_DETECT is used.
 from __future__ import annotations
 from netmiko import ConnectHandler, ConnectHandler, NetmikoTimeoutException, NetmikoAuthenticationException
 from netmiko.ssh_autodetect import SSHDetect
-from netkit_cisco.platforms import DeviceType
+#from netkit_cisco.platforms import DeviceType
+from netkit_cisco._enums import DeviceType
 from netkit_cisco._error_handler import _error_handler
 
 class _SSHTransport:

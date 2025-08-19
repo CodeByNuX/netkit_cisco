@@ -1,15 +1,14 @@
 from netkit_cisco.device import CiscoDevice
 
-
-# NXOS 192.168.2.193
-# iou1"
-# netkitRouter
-
-TEST = "IOSXE"
+TEST = "Alibabba"
 if TEST == "NXOS":
     node = CiscoDevice(ip="192.168.2.193",username="admin",password="MyPassword")
 if TEST == "IOSXE":
     node = CiscoDevice(ip="netkitRouter",username="admin",password="MyPassword")
+if TEST == "C3650":
+    node = CiscoDevice(ip="C3650",username="admin",password="MyPassword")
+if TEST == "Alibabba":
+    node = CiscoDevice(ip="Alibabba",username="admin",password="MyPassword")
 
 try:
     while node.is_connected == False and node.connection_attempts < 5:
@@ -22,6 +21,7 @@ try:
     print(node.os.family)
     print(node.os.major)
     print(node.os.minor)
+    print(node.device_type)
 
     print(node.serial)
     print(node.model)
