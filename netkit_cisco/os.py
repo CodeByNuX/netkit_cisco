@@ -1,4 +1,5 @@
 import re
+from netkit_cisco._enums import InstallMode
 
 class IOSXEVersion:
     """
@@ -24,6 +25,8 @@ class IOSXEVersion:
         self.minor = 0
         self.patch = 0
         self.rebuild_letter = ""
+        self.install_mode = InstallMode.UNKNOWN
+
 
         # Regex pattern matches formats like:
         #   17.3.4   or   17.3.4a
@@ -46,6 +49,15 @@ class IOSXEVersion:
         """
         return (self.major, self.minor, self.patch, self.rebuild_letter) > \
                (other.major, other.minor, other.patch, other.rebuild_letter)
+    
+    def set_install_mode(self,image_value:str) ->None:
+        img = image_value.strip().lower()
+        if img.endswith(".conf"):
+            self.install_mode = InstallMode.INSTALL
+        elif img.endswith(".bin"):
+            self.install_mode = InstallMode.BUNDLE
+        else:
+            self.install_mode = InstallMode.UNKNOWN
 
 
 class NXOSVersion:
@@ -77,6 +89,7 @@ class NXOSVersion:
         self.train = ""
         self.rebuild = 0
         self.suffix = ""
+        self.install_mode = InstallMode.NA # NXOS future implementation 
 
         # Parse I-style format: e.g., "7.0(3)I7(9)"
         value = re.match(r"^(\d+)\.(\d+)\((\d+)\)(I\d)(?:\((\d+)\))?$", raw)
@@ -96,6 +109,11 @@ class NXOSVersion:
             self.maintenance = int(value.group(3))
             self.suffix = value.group(4) or ""
             return
+    def set_install_mode(self,image_value:str) -> None:
+        """
+        NX-OS future update
+        """
+        self.install_mode = InstallMode.NA #
 
     def is_newer_than(self, other) -> bool:
         """

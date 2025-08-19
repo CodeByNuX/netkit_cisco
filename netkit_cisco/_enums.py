@@ -15,7 +15,7 @@ class DeviceType(str,Enum):
 
 class InstallMode(str,Enum):
     """
-    
+
     Represents cisco modes of installations
     """
     INSTALL = "INSTALL" # packages.conf

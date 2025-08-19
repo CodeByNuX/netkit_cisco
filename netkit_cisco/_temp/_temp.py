@@ -22,7 +22,7 @@ try:
     print(node.os.major)
     print(node.os.minor)
     print(node.device_type)
-
+    print(node.os.install_mode)
     print(node.serial)
     print(node.model)
     print(node.storage.name)

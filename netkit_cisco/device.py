@@ -219,6 +219,8 @@ class CiscoDevice:
         
         self.os = parse_version((self._safe_get(record,"os") or # NX-OS
                                  self._safe_get(record,"version"))) #IOS-XE
+        self.os.set_install_mode((self._safe_get(record,"running_image",default="") or self._safe_get(record,"boot_image",default="")))
+        
         # ------- show bootflash:
         
         try:
