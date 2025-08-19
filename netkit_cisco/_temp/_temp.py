@@ -35,4 +35,5 @@ try:
 
 except Exception:
     node.last_exception
+    print("+-+-+-+-+-+-+-+-+")
 

@@ -48,7 +48,7 @@ class CiscoDevice:
         self.config_register = None
         self.serial = None
         self.model = None
-        self.rommon = None
+        #self.rommon = None
         self.last_connected_at:datetime = None
         self.connection_attempts:int = 0
         self.last_exception:str = None
